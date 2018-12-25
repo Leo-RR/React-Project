@@ -16,7 +16,6 @@ export default class Livro extends Component{
         .then(res => res.json())
         .then(res => {
             _this.setState({livros: res.slice(450, res.length)});
-            console.log(_this.state);
         })
         .catch(err => console.log(err));
     }
