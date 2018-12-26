@@ -37,6 +37,8 @@ class FormularioAutor extends Component{
         event.preventDefault();
 
         // let _this = this;
+        
+        console.log(this.state);
 
         $.ajax({
           url: 'https://cdc-react.herokuapp.com/api/autores',
