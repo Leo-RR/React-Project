@@ -3,9 +3,8 @@ import PubSub from 'pubsub-js';
 
 class InputCustomizado extends Component {
 
-    constructor(props){
-        super(props);
-        this.teste = props;
+    constructor(){
+        super();
         this.state = {msgErro: ''};
     }
 
@@ -20,7 +19,6 @@ class InputCustomizado extends Component {
     }
 
     componentDidMount() {
-        console.log(this.teste);
         PubSub.subscribe('erro-validacao', function(topico, erro){
             if (erro.field === this.props.name) {
                 this.setState({msgErro: erro.defaultMessage});
