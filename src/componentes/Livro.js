@@ -12,7 +12,8 @@ class FormularioLivro extends Component{
         this.state = {
             autorId: '',
             titulo: '',
-            preco: ''
+            preco: '',
+            erroMsg: ''
         };
 
         this.setAutorId = this.setAutorId.bind(this);
@@ -35,7 +36,7 @@ class FormularioLivro extends Component{
 
     enviaForm(event){
         event.preventDefault();
-            
+                
         $.ajax({
             url: 'https://cdc-react.herokuapp.com/api/livros',
             contentType: 'application/json',
@@ -47,15 +48,16 @@ class FormularioLivro extends Component{
                 PubSub.publish('atualiza-listagem-livros', response.slice(450, response.length));
             },
             error: function(response){
-                console.log(response);
                 if (response.status === 400){
 
-                    if (response.field === "autorId"){
-                        //Tratar erro do combo vazio
-                    }
-                    new TratadorErros().publicaErros(response.responseJSON); 
+                    let res = response.responseJSON;
+                    res.errors.map(item => {
+                        item.field === "autorId" ? this.setState({erroMsg: item.defaultMessage}) : this.setState({erroMsg: ''});  
+                    });
+
+                    new TratadorErros().publicaErros(res); 
                 }
-            },
+            }.bind(this),
             beforeSend: function(){
                 PubSub.publish('limpa-erros', {});
             }
@@ -78,7 +80,7 @@ class FormularioLivro extends Component{
                                 })
                             }
                         </select>
-                        <span className="error"></span>
+                        <span className="error">{this.state.erroMsg}</span>
                     </div>
                     <InputCustomizado id="titulo" name="titulo" value={this.state.titulo} onChange={this.setTitulo} label="Título"/>
                     <InputCustomizado id="preco" name="preco" value={this.state.preco} onChange={this.setPreco} label="Preço"/>
