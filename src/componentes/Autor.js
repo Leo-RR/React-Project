@@ -15,22 +15,13 @@ class FormularioAutor extends Component{
             senha: '' 
         };
 
-        this.setNome = this.setNome.bind(this);
-        this.setEmail = this.setEmail.bind(this);
-        this.setSenha = this.setSenha.bind(this);
         this.enviaForm = this.enviaForm.bind(this);
     }
 
-    setNome(event){
-        this.setState({nome: event.target.value});
-    }
-
-    setEmail(event){
-        this.setState({email: event.target.value});
-    }
-
-    setSenha(event){
-        this.setState({senha: event.target.value});
+    atualizaCampo(input, event){
+        let obj = {};
+        obj[input] = event.target.value;
+        this.setState(obj);
     }
 
     enviaForm(event){
@@ -48,7 +39,7 @@ class FormularioAutor extends Component{
           data: JSON.stringify({nome: this.state.nome, email: this.state.email, senha: this.state.senha}),
           success: function(response){
             // this.setState({lista: response.slice(5090, response.length)})
-            PubSub.publish('atualiza-listagem-autores', response.slice(5240, response.length));
+            PubSub.publish('atualiza-listagem-autores', response.slice(5440, response.length));
           },
           error: function(response){
             console.log(response);
@@ -61,46 +52,6 @@ class FormularioAutor extends Component{
               PubSub.publish('limpa-erros', {});
           }
         });
-
-        // fetch('https://cdc-react.herokuapp.com/api/autores', {
-        //     method: 'post', 
-        //     body: JSON.stringify({nome: this.state.nome, email: this.state.email, senha: this.state.senha}),
-        //     headers: {
-        //     'Content-type': 'application/json',
-        //     }
-        // }).then( response => {
-
-        //     var reader = response.body.getReader(); 
-
-        //     return new ReadableStream({
-        //     start(controller) {
-
-        //         return pump();
-                
-        //         function pump() {
-        //         return reader.read().then(({ done, value }) => {
-        //             // When no more data needs to be consumed, close the stream
-        //             if (done) {
-        //                 controller.close();
-        //                 return;
-        //             }
-        //             /// Enqueue the next data chunk into our target stream
-        //             controller.enqueue(value);
-        //             return pump();
-        //         });
-        //         }
-        //     }  
-        //     });
-        // })
-        // .then(stream => new Response(stream))
-        // .then(response => response.json())
-        // .then(data => PubSub.publish('atualiza-listagem-autores', data))
-        // .catch(err => {
-
-        //     if (err.status === 400){
-        //        new TratadorErros().publicaErros(err.responseJSON); 
-        //     }
-        // });
     }
 
     render(){
@@ -109,9 +60,9 @@ class FormularioAutor extends Component{
 
             <div className="pure-form pure-form-aligned">
                 <form className="pure-form pure-form-aligned" onSubmit={this.enviaForm} method="post">
-                    <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.setNome} label="Nome"/>
-                    <InputCustomizado id="email" type="email" name="email" value={this.state.email} onChange={this.setEmail} label="Email"/>
-                    <InputCustomizado id="Senha" type="password" name="senha" value={this.state.senha} onChange={this.setSenha} label="Senha"/>
+                    <InputCustomizado id="nome" type="text" name="nome" value={this.state.nome} onChange={this.atualizaCampo.bind(this, 'nome')} label="Nome"/>
+                    <InputCustomizado id="email" type="email" name="email" value={this.state.email} onChange={this.atualizaCampo.bind(this, 'email')} label="Email"/>
+                    <InputCustomizado id="Senha" type="password" name="senha" value={this.state.senha} onChange={this.atualizaCampo.bind(this, 'senha')} label="Senha"/>
                     <BotaoSubmitCustomizado label="Gravar"/>
                 </form>             
             </div>
